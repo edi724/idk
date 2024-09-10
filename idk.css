@@ -1,13 +1,12 @@
-.hide {
-    display: none;
-}
-.show{
-    display: initial;
-}
 p{
-    font-size:500%;
     position:absolute;
-    top: 600px;
-    right: 925px;
-
+}
+.idk{
+    background:#00ffff;
+    position:absolute;
+}
+h1{
+    color:purple;
+    position:absolute;
+    right:1000px;
 }
