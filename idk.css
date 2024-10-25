@@ -5,8 +5,15 @@ p{
     background:#00ffff;
     position:absolute;
 }
+input{
+    margin:5px;
+    padding:400px;
+}
 h1{
     color:purple;
     position:absolute;
     right:1000px;
+}
+button{
+    background-color:aquamarine
 }
