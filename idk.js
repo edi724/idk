@@ -22,7 +22,7 @@ class Lexer {
             this.current_char = this.code[this.index]
             console.log(`Current character is: ${this.current_char}`);
         }
-        else {
+        else{
             this.current_char = null
             console.log(`End of code reached`);
         }
