@@ -1,15 +1,11 @@
 p{
     position:absolute;
 }
-.idk{
-    background:#00ffff;
-    position:absolute;
+.hide{
+    display: none;
 }
 h1{
     color:purple;
     position:absolute;
     right:1000px;
-}
-button{
-    background-color:rgb(95, 248, 197)
 }
