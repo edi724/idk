@@ -1,4 +1,4 @@
-  const socket = new WebSocket('wss://22d1-2a02-2f09-3f14-fa00-bcac-4620-6508-f859.ngrok-free.app');
+  const socket = new WebSocket('wss://a999-2a02-2f09-3f14-fa00-f01f-7b9d-e520-5257.ngrok-free.app');
   const input = document.getElementById("1")
   const p = document.getElementById("2")
   const input2 = document.getElementById("3")
