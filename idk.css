@@ -1,6 +1,4 @@
-p{
-    position:absolute;
-}
+
 .hide{
     display: none;
 }
@@ -8,4 +6,7 @@ h1{
     color:purple;
     position:absolute;
     right:1000px;
+}
+div{
+    display: block;
 }
