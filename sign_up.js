@@ -11,5 +11,10 @@ socket.onmessage = (message) =>{
     }
 }
 function sign_up(){
-    socket.send("1"+username.value+"|"+password.value)
+    if(username.value.includes("|") || password.value.includes("|")){
+        error_para.innerHTML = "username or password cannot contain '|'"
+      }
+      else{
+        socket.send("1"+username.value+"|"+password.value)
+      }
 }
