@@ -1,23 +1,44 @@
   const socket = new WebSocket('wss://eager-gazelle-plainly.ngrok-free.app');
-  const input = document.getElementById("1")
-  const div = document.getElementById("2")
-  const input2 = document.getElementById("3")
-  const b = document.getElementById("4")
-  const b2 = document.getElementById("5")
+  const message_input = document.getElementById("1")
+  const send_Button = document.getElementById("2")
+  const div = document.getElementById("3")
+  const username = document.getElementById("4")
+  const password = document.getElementById("5")
+  const login_Button = document.getElementById("6")
+  const button = document.getElementById("7")
+  const error_para = document.getElementById("8")
+  function popString(str, index) {
+    return str.slice(0, index) + str.slice(index + 1);
+  }
   socket.onmessage = (message) => {
-    let para = document.createElement("p");
-    para.innerHTML = message.data;
-    div.appendChild(para);
+    message = message.data
+    console.log(message)
+    if(message[0] == "0"){
+      message = popString(message, 0)
+      let para = document.createElement("p");
+      para.innerHTML = message;
+      div.appendChild(para);
+    }
+    if(message[0] == "1"){
+      message = popString(message, 0)
+      if(message == "success"){
+        message_input.className = ""
+        send_Button.className = ""
+        username.className = "hide"
+        password.className = "hide"
+        login_Button.className = "hide"
+        button.className = "hide"
+        error_para.className = "hide"
+      }
+      else{
+        error_para.innerHTML = "invalid username or password"
+      }
+    }
   };
   
  function send_message(){
-    socket.send(["1"+input.value])
+    socket.send(["2"+message_input.value])
   }
- function enter_name(){
-  console.log(input.className)
-  input.className = ""
-  b.className = ""
-  input2.className = "hide"
-  b2.className = "hide"
-  socket.send("0"+input2.value)
+ function log_in(){
+  socket.send("0"+username.value+"|"+password.value)
  }
