@@ -40,5 +40,10 @@
     socket.send(["2"+message_input.value])
   }
  function log_in(){
-  socket.send("0"+username.value+"|"+password.value)
+  if(username.value.includes("|") || password.value.includes("|")){
+    error_para.innerHTML = "username or password cannot contain '|'"
+  }
+  else{
+    socket.send("0"+username.value+"|"+password.value)
+  }
  }
