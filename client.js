@@ -9,27 +9,22 @@ const button = document.getElementById("7");
 const error_para = document.getElementById("8");
 const logout_Button = document.getElementById("9");
 const image_file_input = document.getElementById("10");
+const feedback_a = document.getElementById("11");
+const image_file_button = document.getElementById("12");
 
-image_file_input.addEventListener("change", async () => {
-  const file = image_file_input.files[0];
+image_file_button.addEventListener("click", async () => {
+  image_file_input.click()
+  image_file_input.addEventListener("change", async () =>{
+    let file = image_file_input.files[0];
   if (file) {
     const arrayBuffer = await file.arrayBuffer();
-
-    // Create a new ArrayBuffer with length of original buffer + 1 for the '4' byte
     const newArrayBuffer = new ArrayBuffer(arrayBuffer.byteLength + 1);
-
-    // Create a Uint8Array view for the new ArrayBuffer
     const newView = new Uint8Array(newArrayBuffer);
-
-    // Add the byte "4" at the beginning
     newView[0] = 4;
-
-    // Copy the original data into the new ArrayBuffer starting at index 1
     newView.set(new Uint8Array(arrayBuffer), 1);
-
-    // Send the new ArrayBuffer with the "4" byte in front
     socket.send(newArrayBuffer);
   }
+  })
 });
 
 let IDid = 0;
@@ -59,9 +54,11 @@ socket.onmessage = (message) => {
   if(message.data[0] == "0"){
     message = message.data
     message = popString(message, 0)
-    let para = document.createElement("p");
-    para.innerHTML = message;
-    div.appendChild(para);
+    if(button.className == "hide"){
+      let para = document.createElement("p");
+      para.innerHTML = message;
+      div.appendChild(para);
+    }
   }
   else if(message.data[0] == "1"){
     message = message.data
@@ -70,7 +67,8 @@ socket.onmessage = (message) => {
       message_input.className = ""
       send_Button.className = ""
       logout_Button.className = ""
-      image_file_input.className = ""
+      image_file_button.className = ""
+      feedback_a.className = ""
       username.className = "hide"
       password.className = "hide"
       login_Button.className = "hide"
@@ -81,30 +79,30 @@ socket.onmessage = (message) => {
       error_para.innerHTML = "invalid username or password"
     }
   }
-  console.log(Object.prototype.toString.call(message.data));
-  if(message.data instanceof Blob){
+  else if(message.data instanceof Blob){
     message.data.arrayBuffer().then((buffer) => {
     const uint8View = new Uint8Array(buffer);
   
     if (uint8View[0] === 4) {  // Check the identifier for an image
       console.log("Image identifier detected");
   
-      const imageData = uint8View.slice(1);  // Remove the first byte (identifier)
-  
+      let imageData = uint8View.slice(1);  // Remove the first byte (identifier)
+      image = uint8View[1].toString()
+      imageData = uint8View.slice(1)
       // Convert the remaining data to a Blob and display it
       const blob = new Blob([imageData], { type: 'image/png' });
       const imageUrl = URL.createObjectURL(blob);
-      const img = document.createElement('img');
-      img.src = imageUrl;
+      let img = document.createElement('a');
+      img.href = `image_viewer.html?image=${image}.png`
+      img.innerHTML = "Picture"
   
       // Append the image to the document
       div.appendChild(img);
+      div.appendChild(document.createElement('p'))
     } else {
       console.log("Unexpected identifier:", uint8View[0]);
     }
-  }).catch((err) => {
-    console.error("Error converting Blob to ArrayBuffer:", err);
-  });
+  })
 new Blob().arrayBuffer  
 }
   
