@@ -11,7 +11,6 @@ const logout_Button = document.getElementById("9");
 const image_file_input = document.getElementById("10");
 const feedback_a = document.getElementById("11");
 const image_file_button = document.getElementById("12");
-
 image_file_button.addEventListener("click", async () => {
   image_file_input.click()
   image_file_input.addEventListener("change", async () =>{
@@ -46,6 +45,7 @@ socket.onopen = () => {
 };
 
 socket.onmessage = (message) => {
+  console.log(message.data)
   if (!IDid) {
     console.log(message.data)
     localStorage.setItem("clientId", message.data);
@@ -54,10 +54,18 @@ socket.onmessage = (message) => {
   if(message.data[0] == "0"){
     message = message.data
     message = popString(message, 0)
+    bit = message[0]
+    message = popString(message, 0)
     if(button.className == "hide"){
-      let para = document.createElement("p");
+      let para = document.createElement("pre");
       para.innerHTML = message;
       div.appendChild(para);
+      if(bit=="1"){
+        let delete_button = document.createElement("button");
+        delete_button.innerHTML = "X";
+        delete_button.style.backgroundColor = "red";
+        div.appendChild(delete_button);
+      }
     }
   }
   else if(message.data[0] == "1"){
@@ -99,6 +107,7 @@ socket.onmessage = (message) => {
       // Append the image to the document
       div.appendChild(img);
       div.appendChild(document.createElement('p'))
+      socket.send("6")
     } else {
       console.log("Unexpected identifier:", uint8View[0]);
     }
@@ -107,7 +116,9 @@ new Blob().arrayBuffer
 }
   
 };
-
+function delete_message(){
+  
+}
 function send_message() {
   socket.send("2" + message_input.value);  // Text message with identifier "2"
 }

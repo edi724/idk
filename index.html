@@ -1,21 +1,21 @@
 <html>
 <head>
-    <link rel="stylesheet" href="idk.css">
+    <link rel="stylesheet" href="index.css">
 </head>
 <body>
     <p id ="8"></p>
-    <input id="1" placeholder="Type message here" class="hide"></input>
-    <button onclick="send_message()" class="hide" id="2">send</button>
-    <button onclick ="log_out()" class = "hide" id = "9">log out</button>
-    <input type="file" id="10" accept="image/*" class="hide"></input>
-    <button id ="12" class="hide">send an image</button>
+    <textarea id="1" placeholder="Type message here" style="height: 40px;width: 300px;" class="hide"></textarea>
+    <button onclick="send_message()" class="hide" id="2"><img height="30px" width="33px" src ="send_button.png"></button>
+    <button style="height:30px;width:110px;" height="30px" width="33px" onclick ="log_out()" class = "hide" id = "9">log out</button>
+    <input type="file"  id="10" accept="image/*" class="hide"></input>
+    <button style="height:30px;width:110px;" id ="12" class="hide">send an image</button>
     <a href ="feedback.html" style="text-decoration: none;color: black; background-color:rgb(168, 168, 168); padding: 5px 10px;border-radius: 10px;" class="hide" id ="11">send feedback</a>
     <div id = "3" style="display: block;"></div>
     <div>
     <input id="4" placeholder="name" style="margin-bottom: 10px;"></input><br>
-    <input id = "5" placeholder="password"></input><br>
-    <button onclick="log_in()" id="6">log in</button>
-    <a href="sign_up.html" id = "7">create an account</a>
+    <input id = "5" placeholder="password"></input><br><br>
+    <button onclick="log_in()" style="width:175px;" id="6">log in</button><br>
+    <a href="sign_up.html" style="font-size:150%;text-decoration: none;" id = "7">sign up</a>
     </div>
     <script src="client.js"></script>
 </body>
