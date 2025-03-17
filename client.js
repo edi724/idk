@@ -11,17 +11,28 @@ const logout_Button = document.getElementById("9");
 const image_file_input = document.getElementById("10");
 const feedback_a = document.getElementById("11");
 const image_file_button = document.getElementById("12");
+let logon = true
 image_file_button.addEventListener("click", async () => {
   image_file_input.click()
   image_file_input.addEventListener("change", async () =>{
     let file = image_file_input.files[0];
   if (file) {
-    const arrayBuffer = await file.arrayBuffer();
-    const newArrayBuffer = new ArrayBuffer(arrayBuffer.byteLength + 1);
-    const newView = new Uint8Array(newArrayBuffer);
-    newView[0] = 4;
-    newView.set(new Uint8Array(arrayBuffer), 1);
-    socket.send(newArrayBuffer);
+    const clientId = localStorage.getItem("clientId").toString();
+const clientIdBytes = new TextEncoder().encode(clientId); // Convert clientId to bytes
+
+const separator = new Uint8Array([124]); // ASCII for '|'
+const arrayBuffer = await file.arrayBuffer();
+
+const newArrayBuffer = new ArrayBuffer(1 + clientIdBytes.length + 1 + arrayBuffer.byteLength);
+const newView = new Uint8Array(newArrayBuffer);
+
+newView[0] = 4; // Control byte
+newView.set(clientIdBytes, 1); // Insert clientId
+newView.set(separator, 1 + clientIdBytes.length); // Insert '|'
+newView.set(new Uint8Array(arrayBuffer), 2 + clientIdBytes.length); // Insert file data
+console.log(newArrayBuffer)
+socket.send(newArrayBuffer);
+
   }
   })
 });
@@ -68,6 +79,9 @@ socket.onmessage = (message) => {
       }
     }
   }
+  else if (message.data[0] == 5) {
+      logon =false
+  }
   else if(message.data[0] == "1"){
     message = message.data
     message = popString(message, 0)
@@ -87,32 +101,28 @@ socket.onmessage = (message) => {
       error_para.innerHTML = "invalid username or password"
     }
   }
-  else if(message.data instanceof Blob){
-    message.data.arrayBuffer().then((buffer) => {
-    const uint8View = new Uint8Array(buffer);
-  
-    if (uint8View[0] === 4) {  // Check the identifier for an image
-      console.log("Image identifier detected");
-  
-      let imageData = uint8View.slice(1);  // Remove the first byte (identifier)
-      image = uint8View[1].toString()
-      imageData = uint8View.slice(1)
-      // Convert the remaining data to a Blob and display it
-      const blob = new Blob([imageData], { type: 'image/png' });
-      const imageUrl = URL.createObjectURL(blob);
-      let img = document.createElement('a');
-      img.href = `image_viewer.html?image=${image}.png`
-      img.innerHTML = "Picture"
-  
-      // Append the image to the document
-      div.appendChild(img);
-      div.appendChild(document.createElement('p'))
-      socket.send("6")
-    } else {
-      console.log("Unexpected identifier:", uint8View[0]);
+  else if(message.data[0] == "4"){
+    message = message.data
+    message = popString(message, 0)
+    console.log(message)
+    current_char=message[0]
+    image=""
+    while(current_char != "|"){
+      image+=message[0]
+      message = popString(message, 0)
+      current_char=message[0]
     }
-  })
-new Blob().arrayBuffer  
+    console.log(image, "\n", message)
+    message = popString(message, 0)
+    img = document.createElement("a")
+    para = document.createElement("p")
+    img.href = `image_viewer.html?image=${+image}.png`
+    img.innerHTML = "Picture"
+    para.innerHTML = message + ": "
+    para.appendChild(img)
+    console.log(logon)
+    div.appendChild(para);
+    socket.send("6")
 }
   
 };
@@ -120,7 +130,7 @@ function delete_message(){
   
 }
 function send_message() {
-  socket.send("2" + message_input.value);  // Text message with identifier "2"
+  socket.send("2" + message_input.value); 
 }
 
 function log_out() {
