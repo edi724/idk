@@ -62,7 +62,7 @@ socket.onmessage = (message) => {
     localStorage.setItem("clientId", message.data);
     IDid = 1;
   }
-  if(message.data[0] == "0"){
+  else if(message.data[0] == "0"){
     message = message.data
     message = popString(message, 0)
     bit = message[0]
@@ -122,8 +122,10 @@ socket.onmessage = (message) => {
     para.appendChild(img)
     console.log(logon)
     div.appendChild(para);
-    socket.send("6")
 }
+  else{
+    error_para.innerHTML = message.data
+  }
   
 };
 function delete_message(){
