@@ -11,6 +11,7 @@ const logout_Button = document.getElementById("9");
 const image_file_input = document.getElementById("10");
 const feedback_a = document.getElementById("11");
 const image_file_button = document.getElementById("12");
+const send_to = document.getElementById("13");
 let logon = true
 image_file_button.addEventListener("click", async () => {
   image_file_input.click()
@@ -19,17 +20,20 @@ image_file_button.addEventListener("click", async () => {
   if (file) {
     const clientId = localStorage.getItem("clientId").toString();
 const clientIdBytes = new TextEncoder().encode(clientId); // Convert clientId to bytes
+let send_to_value = new TextEncoder().encode(send_to.value);
 
 const separator = new Uint8Array([124]); // ASCII for '|'
 const arrayBuffer = await file.arrayBuffer();
 
-const newArrayBuffer = new ArrayBuffer(1 + clientIdBytes.length + 1 + arrayBuffer.byteLength);
+const newArrayBuffer = new ArrayBuffer(1 + clientIdBytes.length + 1 + send_to.value.length + 1 +  arrayBuffer.byteLength);
 const newView = new Uint8Array(newArrayBuffer);
 
 newView[0] = 4; // Control byte
 newView.set(clientIdBytes, 1); // Insert clientId
 newView.set(separator, 1 + clientIdBytes.length); // Insert '|'
-newView.set(new Uint8Array(arrayBuffer), 2 + clientIdBytes.length); // Insert file data
+newView.set(send_to_value, 2 + clientIdBytes.length);
+newView.set(separator, 2 + clientIdBytes.length + send_to_value.length); // Insert '|'
+newView.set(new Uint8Array(arrayBuffer), 3 + clientIdBytes.length + send_to_value.length); // Insert file data
 console.log(newArrayBuffer)
 socket.send(newArrayBuffer);
 
@@ -91,6 +95,7 @@ socket.onmessage = (message) => {
       logout_Button.className = ""
       image_file_button.className = ""
       feedback_a.className = ""
+      send_to.className = ""
       username.className = "hide"
       password.className = "hide"
       login_Button.className = "hide"
@@ -132,7 +137,7 @@ function delete_message(){
   
 }
 function send_message() {
-  socket.send("2" + message_input.value); 
+  socket.send("2" + send_to.value + "|" + message_input.value); 
 }
 
 function log_out() {
